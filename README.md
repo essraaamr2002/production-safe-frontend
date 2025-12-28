@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Frontend Production Readiness Validation (Sandbox)
 
-## Getting Started
+This repository implements a production-style frontend sandbox for:
+- Environment-based API configuration
+- Dashboard analytics integration
+- Authentication-related flows (verification + password reset)
+- Resilient UI states (loading / empty / error)
+- Clean Git workflow (feature branch + PR)
 
-First, run the development server:
+---
+
+##  Environment Configuration
+
+### Required variables
+Create `.env.local` from `.env.example` and set:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+NEXT_PUBLIC_API_URL=http://localhost:3000
+NEXT_PUBLIC_ENV=development
+----------------------------------------------------------------
+Written Questions
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. How do these flows behave differently in Development / Staging / Production?
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Development:
+Local APIs or mocked endpoints, fast iteration, verbose logging.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Staging:
+Real backend, production-like configuration, used for QA and validation.
 
-## Learn More
+Production:
+Secure cookies, HTTPS, monitoring, optimized builds, no debug logging.
+-----------------------------------------------------------------------
+2. What frontend mistakes commonly break CI/CD pipelines?
 
-To learn more about Next.js, take a look at the following resources:
+Missing or misconfigured environment variables
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+TypeScript or ESLint errors
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Import path case-sensitivity issues
 
-## Deploy on Vercel
+Relying on .env.local during build
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Unhandled promise rejections or runtime errors
+---------------------------------------------------------------------------
+3. How do you protect frontend code from backend API changes?
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Use typed API layers or shared contracts
+
+Validate and guard API responses
+
+Avoid assuming response structure
+
+Version APIs when possible
+
+Use feature flags and fallback UI states
+---------------------------------------------------------------------------------
+4. How should tokens be handled safely in frontend authentication flows?
+
+Never log tokens
+
+Prefer httpOnly cookies in production
+
+Avoid storing tokens in localStorage
+
+Use short-lived tokens
+
+Clear tokens from memory after use
+
+Always use HTTPS
